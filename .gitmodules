@@ -1,0 +1,3 @@
+[submodule "class-repo"]
+	path = class-repo
+	url = https://github.com/BYU-CS-340/softwaredesign
