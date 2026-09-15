@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@types/node": "^26.5.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/ImageEditor.js"
+  }
+}
