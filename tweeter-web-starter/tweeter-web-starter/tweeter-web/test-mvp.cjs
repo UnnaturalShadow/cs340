@@ -9,9 +9,16 @@ require.extensions['.ts'] = (module, filename) => {
 };
 const { FakeData } = require('tweeter-shared');
 const { UserService } = require('./src/model/service/UserService.ts');
-const { LoginPresenter, RegisterPresenter } = require('./src/presenter/AuthenticationPresenter.ts');
-const { FollowersPresenter, FolloweesPresenter, FeedPresenter, StoryPresenter } = require('./src/presenter/ScrollerPresenter.ts');
-const { AppNavbarPresenter, PostStatusPresenter, UserInfoPresenter, UserNavigationPresenter } = require('./src/presenter/ActionsPresenter.ts');
+const { LoginPresenter } = require('./src/presenter/LoginPresenter.ts');
+const { RegisterPresenter } = require('./src/presenter/RegisterPresenter.ts');
+const { FollowersPresenter } = require('./src/presenter/FollowersPresenter.ts');
+const { FolloweesPresenter } = require('./src/presenter/FolloweesPresenter.ts');
+const { FeedPresenter } = require('./src/presenter/FeedPresenter.ts');
+const { StoryPresenter } = require('./src/presenter/StoryPresenter.ts');
+const { AppNavbarPresenter } = require('./src/presenter/AppNavbarPresenter.ts');
+const { PostStatusPresenter } = require('./src/presenter/PostStatusPresenter.ts');
+const { UserInfoPresenter } = require('./src/presenter/UserInfoPresenter.ts');
+const { UserNavigationPresenter } = require('./src/presenter/UserNavigationPresenter.ts');
 const { SessionService } = require('./src/model/service/SessionService.ts');
 
 async function main() {

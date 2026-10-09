@@ -3,7 +3,7 @@ import useUserInfo from "../../hooks/useUserInfo";
 import "./PostStatus.css";
 import { useState } from "react";
 
-import { PostStatusPresenter } from "../../presenter/ActionsPresenter";
+import { PostStatusPresenter } from "../../presenter/PostStatusPresenter";
 import { ToastType } from "../toaster/Toast";
 
 const PostStatus = () => {

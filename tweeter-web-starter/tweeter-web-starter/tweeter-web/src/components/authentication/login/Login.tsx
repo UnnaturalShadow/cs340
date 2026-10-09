@@ -1,4 +1,4 @@
-import { LoginPresenter } from "../../../presenter/AuthenticationPresenter";
+import { LoginPresenter } from "../../../presenter/LoginPresenter";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfoActions from "../../../hooks/useUserInfoActions";
 import useMessageActions from "../../../hooks/useMessageActions";

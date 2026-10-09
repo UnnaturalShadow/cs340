@@ -7,7 +7,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import { useState } from "react";
-import { AppNavbarPresenter } from "../../presenter/ActionsPresenter";
+import { AppNavbarPresenter } from "../../presenter/AppNavbarPresenter";
 import { ToastType } from "../toaster/Toast";
 
 const AppNavbar = () => {

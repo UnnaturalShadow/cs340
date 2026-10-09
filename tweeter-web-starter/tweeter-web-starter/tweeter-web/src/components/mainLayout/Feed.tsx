@@ -6,7 +6,7 @@ import { ToastType } from "../toaster/Toast";
 import useMessageActions from "../../hooks/useMessageActions";
 import useUserInfo from "../../hooks/useUserInfo";
 
-import { FeedPresenter } from "../../presenter/ScrollerPresenter";
+import { FeedPresenter } from "../../presenter/FeedPresenter";
 
 const Feed = () => {
   const featurePath = "/feed";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { OAuthPresenter } from "../../presenter/ActionsPresenter";
+import { OAuthPresenter } from "../../presenter/OAuthPresenter";
 import useMessageActions from "../../hooks/useMessageActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";

@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { User } from "tweeter-shared";
-import { UserNavigationPresenter } from "../presenter/ActionsPresenter";
+import { UserNavigationPresenter } from "../presenter/UserNavigationPresenter";
 import { ToastType } from "../components/toaster/Toast";
 import useMessageActions from "./useMessageActions";
 import useUserInfo from "./useUserInfo";

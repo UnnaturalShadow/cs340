@@ -1,13 +1,11 @@
-import { AuthToken, Status, User } from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
-import { StatusService } from "../model/service/StatusService";
+import { AuthToken, User } from "tweeter-shared";
 import { MessageView } from "./Presenter";
 
 export interface ScrollerView<T> extends MessageView {
   setItems(items: T[]): void;
   setHasMoreItems(value: boolean): void;
 }
-class ScrollerPresenter<T> {
+export abstract class ScrollerPresenter<T> {
   private items: T[] = [];
   private last: T | null = null;
   private more = true;
@@ -40,16 +38,4 @@ class ScrollerPresenter<T> {
       }
     } finally { if (generation === this.generation) this.loading = false; }
   }
-}
-export class FollowersPresenter extends ScrollerPresenter<User> {
-  constructor(view: ScrollerView<User>, service = new FollowService()) { super(view, "followers", service.getFollowers.bind(service)); }
-}
-export class FolloweesPresenter extends ScrollerPresenter<User> {
-  constructor(view: ScrollerView<User>, service = new FollowService()) { super(view, "followees", service.getFollowees.bind(service)); }
-}
-export class FeedPresenter extends ScrollerPresenter<Status> {
-  constructor(view: ScrollerView<Status>, service = new StatusService()) { super(view, "feed", service.getFeed.bind(service)); }
-}
-export class StoryPresenter extends ScrollerPresenter<Status> {
-  constructor(view: ScrollerView<Status>, service = new StatusService()) { super(view, "story", service.getStory.bind(service)); }
 }

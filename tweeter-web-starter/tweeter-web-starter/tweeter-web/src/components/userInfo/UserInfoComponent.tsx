@@ -6,7 +6,7 @@ import "./UserInfoComponent.css";
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { UserInfoPresenter } from "../../presenter/ActionsPresenter";
+import { UserInfoPresenter } from "../../presenter/UserInfoPresenter";
 import { ToastType } from "../toaster/Toast";
 
 const UserInfo = () => {

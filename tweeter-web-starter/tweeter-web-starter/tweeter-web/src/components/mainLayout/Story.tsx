@@ -6,7 +6,7 @@ import { ToastType } from "../toaster/Toast";
 import useMessageActions from "../../hooks/useMessageActions";
 import useUserInfo from "../../hooks/useUserInfo";
 
-import { StoryPresenter } from "../../presenter/ScrollerPresenter";
+import { StoryPresenter } from "../../presenter/StoryPresenter";
 
 const Story = () => {
   const featurePath = "/story";
