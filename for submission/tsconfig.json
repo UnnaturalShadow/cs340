@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "rootDir": "./ImageEditorFiles",
+    "target": "ESNext",
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "dist",
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
+  }
+}
