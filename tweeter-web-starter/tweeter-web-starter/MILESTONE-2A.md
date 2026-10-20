@@ -21,7 +21,7 @@ The 14 dummy backend requests are grouped in UserService, FollowService, and Sta
 
 Presenters own input validation, image conversion, busy guards, status creation, paging cursors, page size, and error/success handling. Scroller and profile presenters discard stale results after the selected user changes. Each scroller has its own React view and presenter. The shared paging implementation avoids duplicating cursor and cancellation handling.
 
-Login and registration return the same dummy user. Follow status is randomized on profile load; follow/unfollow only changes the current button state and does not persist or change counts. Posting succeeds without adding a status to feed or story. No AWS backend calls are made. Mentions open the user's story, and URLs remain clickable.
+Login and registration return the same dummy user. Follow status is randomized on profile load; follow/unfollow updates the button and refreshes both dummy counts from the service, per TA passoff feedback. Counts remain randomized rather than incrementing/decrementing real relationships, and follow changes do not persist. Posting succeeds without adding a status to feed or story. No AWS backend calls are made. Mentions open the user's story, and URLs remain clickable.
 
 ## Validation
 
@@ -33,4 +33,4 @@ npm run test:mvp --workspace tweeter-web
 npm start --workspace tweeter-web
 ```
 
-The focused presenter checks cover dummy authentication, validation, error/loading cleanup, paging request guards, stale result cancellation, unchanged follow counts, posting, logout, user lookup, and remembered sessions. For a visual passoff, also exercise login/register, all four lists and pagination, profile navigation including back/forward, follow/unfollow, posting, and logout in the browser.
+The focused checks cover dummy authentication, validation, error/loading cleanup, paging request guards, stale result cancellation, refreshed follow counts, posting, logout, user lookup, and remembered sessions. For a visual passoff, also exercise login/register, all four lists and pagination, profile navigation including back/forward, follow/unfollow, posting, and logout in the browser.

@@ -1,24 +1,21 @@
-import { UserService } from "../model/service/UserService";
-import { LoginView } from "./LoginPresenter";
+import { AuthenticationPresenter, AuthenticationView } from "./AuthenticationPresenter";
 
-export interface RegisterView extends LoginView {
+export interface RegisterView extends AuthenticationView {
   imageSelected(url: string): void;
 }
-export class RegisterPresenter {
-  private busy = false;
+export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
   private bytes = new Uint8Array();
   private extension = "";
   private imageVersion = 0;
-  constructor(private view: RegisterView, public service = new UserService()) {}
   isDisabled(first: string, last: string, alias: string, password: string): boolean {
-    return this.busy || !first.trim() || !last.trim() || !alias.trim() || !password || !this.bytes.length || !this.extension;
+    return this.credentialsMissing(alias, password) || !first.trim() || !last.trim() || !this.bytes.length || !this.extension;
   }
   async selectImage(file?: File) {
     const version = ++this.imageVersion;
     this.bytes = new Uint8Array(); this.extension = "";
     this.view.imageSelected("");
     if (!file) return;
-    try {
+    await this.doFailureReportingOperation(async () => {
       if (!file.type.startsWith("image/")) throw new Error("Please select an image file");
       const bytes = new Uint8Array(await file.arrayBuffer());
       const url = await new Promise<string>((resolve, reject) => {
@@ -30,15 +27,14 @@ export class RegisterPresenter {
       if (version !== this.imageVersion) return;
       this.bytes = bytes; this.extension = file.name.split(".").pop() || "";
       this.view.imageSelected(url);
-    } catch (error) { if (version === this.imageVersion) this.view.displayError(`Failed to load image: ${error}`); }
+    }, "load image", {
+      shouldReport: () => version === this.imageVersion,
+    });
   }
   async register(first: string, last: string, alias: string, password: string, remember: boolean) {
     if (this.isDisabled(first, last, alias, password)) return;
-    this.busy = true; this.view.setIsLoading(true);
-    try {
-      const [user, token] = await this.service.register(first, last, alias, password, this.bytes, this.extension);
-      this.view.authenticated(user, token, remember, `/feed/${user.alias}`);
-    } catch (error) { this.view.displayError(`Failed to register: ${error}`); }
-    finally { this.busy = false; this.view.setIsLoading(false); }
+    await this.authenticate(
+      () => this.service.register(first, last, alias, password, this.bytes, this.extension), remember, "register",
+    );
   }
 }

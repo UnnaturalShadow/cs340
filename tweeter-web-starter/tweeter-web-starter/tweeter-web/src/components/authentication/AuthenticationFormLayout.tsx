@@ -1,3 +1,4 @@
+import LoadingButton from "../LoadingButton";
 import OAuth from "./OAuth";
 
 interface Props {
@@ -43,23 +44,13 @@ const AuthenticationFormLayout = (props: Props) => {
 
           {props.switchAuthenticationMethodFactory()}
 
-          <button
+          <LoadingButton isLoading={props.isLoading}
             id="submitButton"
             className="w-100 btn btn-lg btn-primary"
             type="button"
             disabled={props.submitButtonDisabled()}
             onClick={() => props.submit()}
-          >
-            {props.isLoading ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            ) : (
-              <div>{props.submitButtonLabel}</div>
-            )}
-          </button>
+          >{props.submitButtonLabel}</LoadingButton>
         </form>
       </div>
     </div>

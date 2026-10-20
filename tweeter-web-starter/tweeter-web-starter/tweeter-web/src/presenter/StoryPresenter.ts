@@ -1,7 +1,10 @@
-import { Status } from "tweeter-shared";
-import { StatusService } from "../model/service/StatusService";
-import { ScrollerPresenter, ScrollerView } from "./ScrollerPresenter";
+import { AuthToken, Status, User } from "tweeter-shared";
+import { PagedStatusItemPresenter } from "./PagedStatusItemPresenter";
 
-export class StoryPresenter extends ScrollerPresenter<Status> {
-  constructor(view: ScrollerView<Status>, service = new StatusService()) { super(view, "story", service.getStory.bind(service)); }
+export class StoryPresenter extends PagedStatusItemPresenter {
+  protected getMoreItems(token: AuthToken, user: User): Promise<[Status[], boolean]> {
+    return this.service.getStory(token, user, this.lastItem, this.pageSize);
+  }
+
+  protected getItemDescription(): string { return "story"; }
 }

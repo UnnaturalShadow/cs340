@@ -1,16 +1,12 @@
 import { RegisterPresenter } from "../../../presenter/RegisterPresenter";
 import AuthenticationFields from "../AuthenticationFields";
-import useUserInfoActions from "../../../hooks/useUserInfoActions";
-import useMessageActions from "../../../hooks/useMessageActions";
+import useAuthenticationView from "../../../hooks/useAuthenticationView";
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.css";
 
 import { ChangeEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-
-
-import { ToastType } from "../../toaster/Toast";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -19,19 +15,10 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
-  const { updateUserInfo } = useUserInfoActions();
-  const { displayToast } = useMessageActions();
-
+  const { isLoading, view } = useAuthenticationView();
 
   const [presenter] = useState(() => new RegisterPresenter({
-    setIsLoading,
-    displayError: message => { displayToast(ToastType.Error, message, 0); },
-    authenticated: (user, token, remember, path) => {
-      updateUserInfo(user, user, token, remember); navigate(path);
-    },
+    ...view,
     imageSelected: setImageUrl,
   }));
   const checkSubmitButtonStatus = () => isLoading || presenter.isDisabled(firstName, lastName, alias, password);

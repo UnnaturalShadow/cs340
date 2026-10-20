@@ -52,54 +52,19 @@ const AppNavbar = () => {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Item>
-              <NavLink
-                to={`/feed/${displayedUser!.alias}`}
-                className={() =>
-                  location.pathname.startsWith("/feed/")
-                    ? "nav-link active"
-                    : "nav-link"
-                }
-              >
-                Feed
-              </NavLink>
-            </Nav.Item>
-            <Nav.Item>
-              <NavLink
-                to={`/story/${displayedUser!.alias}`}
-                className={() =>
-                  location.pathname.startsWith("/story/")
-                    ? "nav-link active"
-                    : "nav-link"
-                }
-              >
-                Story
-              </NavLink>
-            </Nav.Item>
-            <Nav.Item>
-              <NavLink
-                to={`/followees/${displayedUser!.alias}`}
-                className={() =>
-                  location.pathname.startsWith("/followees/")
-                    ? "nav-link active"
-                    : "nav-link"
-                }
-              >
-                Followees
-              </NavLink>
-            </Nav.Item>
-            <Nav.Item>
-              <NavLink
-                to={`/followers/${displayedUser!.alias}`}
-                className={() =>
-                  location.pathname.startsWith("/followers/")
-                    ? "nav-link active"
-                    : "nav-link"
-                }
-              >
-                Followers
-              </NavLink>
-            </Nav.Item>
+            {[
+              ["feed", "Feed"], ["story", "Story"],
+              ["followees", "Followees"], ["followers", "Followers"],
+            ].map(([route, label]) => (
+              <Nav.Item key={route}>
+                <NavLink
+                  to={`/${route}/${displayedUser!.alias}`}
+                  className={() => location.pathname.startsWith(`/${route}/`) ? "nav-link active" : "nav-link"}
+                >
+                  {label}
+                </NavLink>
+              </Nav.Item>
+            ))}
             <Nav.Item>
               <NavLink
                 id="logout"

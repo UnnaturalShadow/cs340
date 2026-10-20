@@ -1,42 +1,14 @@
-import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { Status } from "tweeter-shared";
-import StatusItem from "../statusItem/StatusItem";
-import { ToastType } from "../toaster/Toast";
-import useMessageActions from "../../hooks/useMessageActions";
-import useUserInfo from "../../hooks/useUserInfo";
-
 import { StoryPresenter } from "../../presenter/StoryPresenter";
+import StatusItem from "../statusItem/StatusItem";
+import ItemScroller from "./ItemScroller";
 
-const Story = () => {
-  const featurePath = "/story";
-  const { displayedUser, authToken } = useUserInfo();
-  const { displayToast } = useMessageActions();
-  const [items, setItems] = useState<Status[]>([]);
-  const [hasMoreItems, setHasMoreItems] = useState(true);
-
-  const [presenter] = useState(() => new StoryPresenter({
-    setItems, setHasMoreItems,
-    displayError: message => { displayToast(ToastType.Error, message, 0); },
-  }));
-  useEffect(() => {
-    presenter.reset(authToken, displayedUser);
-    return () => presenter.cancel();
-  }, [presenter, authToken, displayedUser]);
-
-  return (
-    <div className="container px-0 overflow-visible vh-100">
-      <InfiniteScroll className="pr-0 mr-0" dataLength={items.length}
-        next={() => { void presenter.loadMore(); }}
-        hasMore={hasMoreItems} loader={<h4>Loading...</h4>}>
-        {items.map((item, index) => (
-          <div key={index} className="row mb-3 mx-0 px-0 border rounded bg-white">
-            <StatusItem status={item} featurePath={featurePath} />
-          </div>
-        ))}
-      </InfiniteScroll>
-    </div>
-  );
-};
+const Story = () => (
+  <ItemScroller<Status>
+    presenterFactory={view => new StoryPresenter(view)}
+    itemComponentGenerator={item => <StatusItem status={item} featurePath="/story" />}
+    itemKey={(_, index) => index}
+  />
+);
 
 export default Story;

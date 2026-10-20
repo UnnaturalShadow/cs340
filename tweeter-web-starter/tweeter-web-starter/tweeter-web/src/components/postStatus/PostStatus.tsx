@@ -1,3 +1,4 @@
+import LoadingButton from "../LoadingButton";
 import useMessageActions from "../../hooks/useMessageActions";
 import useUserInfo from "../../hooks/useUserInfo";
 import "./PostStatus.css";
@@ -40,24 +41,14 @@ const PostStatus = () => {
         />
       </div>
       <div className="form-group">
-        <button
+        <LoadingButton isLoading={isLoading}
           id="postStatusButton"
           className="btn btn-md btn-primary me-1"
           type="button"
           disabled={checkButtonStatus()}
           style={{ width: "8em" }}
           onClick={submitPost}
-        >
-          {isLoading ? (
-            <span
-              className="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          ) : (
-            <div>Post Status</div>
-          )}
-        </button>
+        >Post Status</LoadingButton>
         <button
           id="clearStatusButton"
           className="btn btn-md btn-secondary"

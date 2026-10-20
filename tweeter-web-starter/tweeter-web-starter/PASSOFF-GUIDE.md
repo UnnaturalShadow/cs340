@@ -79,7 +79,7 @@ The build and presenter checks passed during the audit. The build emits CommonJS
 - Open Feed, Story, Followers, and Followees; scroll to load additional dummy entries.
 - Click another user and a status mention; the displayed user changes, and a mention opens that user's story. Check browser back/forward and Return to logged in user.
 - Click a URL: it opens the website in a new tab.
-- Follow/unfollow another user: progress appears and the button toggles. **Counts do not change, and the choice is not saved.** The initial follow state is randomized when a profile loads.
+- Follow/unfollow another user: progress appears, the button toggles, and both counts refresh from the service, per TA passoff feedback. Counts are randomized dummy values, so they may stay the same or move in either direction. The choice is not saved. The initial follow state is randomized when a profile loads.
 - Post a status: progress and success messages appear, and the input clears. **The status does not get added to Story or Feed.** Blank posts are disabled.
 - Logout: the session clears and the app returns to login.
 

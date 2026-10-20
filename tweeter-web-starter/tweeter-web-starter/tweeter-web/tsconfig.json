@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "tweeter-shared": ["../tweeter-shared/dist/index"]
+    },
     "target": "ESNext",
     "lib": [
       "dom",

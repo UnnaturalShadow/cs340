@@ -1,7 +1,10 @@
-import { User } from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
-import { ScrollerPresenter, ScrollerView } from "./ScrollerPresenter";
+import { AuthToken, User } from "tweeter-shared";
+import { PagedUserItemPresenter } from "./PagedUserItemPresenter";
 
-export class FollowersPresenter extends ScrollerPresenter<User> {
-  constructor(view: ScrollerView<User>, service = new FollowService()) { super(view, "followers", service.getFollowers.bind(service)); }
+export class FollowersPresenter extends PagedUserItemPresenter {
+  protected getMoreItems(token: AuthToken, user: User): Promise<[User[], boolean]> {
+    return this.service.getFollowers(token, user, this.lastItem, this.pageSize);
+  }
+
+  protected getItemDescription(): string { return "followers"; }
 }

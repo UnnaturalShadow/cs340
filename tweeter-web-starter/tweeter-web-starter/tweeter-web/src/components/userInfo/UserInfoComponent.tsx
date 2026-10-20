@@ -1,3 +1,4 @@
+import LoadingButton from "../LoadingButton";
 import useUserNavigation from "../../hooks/useUserNavigation";
 
 import useMessageActions from "../../hooks/useMessageActions";
@@ -32,11 +33,9 @@ const UserInfo = () => {
     if (authToken && currentUser && displayedUser) void presenter.load(authToken, currentUser, displayedUser);
     return () => presenter.cancel();
   }, [presenter, authToken, currentUser, displayedUser]);
-  const followDisplayedUser = (event: React.MouseEvent) => {
-    event.preventDefault(); if (authToken && displayedUser) void presenter.changeFollow(authToken, displayedUser, true);
-  };
-  const unfollowDisplayedUser = (event: React.MouseEvent) => {
-    event.preventDefault(); if (authToken && displayedUser) void presenter.changeFollow(authToken, displayedUser, false);
+  const toggleFollow = (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (authToken && displayedUser) void presenter.changeFollow(authToken, displayedUser, !isFollower);
   };
 
   return (
@@ -80,45 +79,17 @@ const UserInfo = () => {
             <form>
               {!displayedUser.equals(currentUser) && (
                 <div className="form-group">
-                  {isFollower ? (
-                    <button
-                      id="unFollowButton"
-                      className="btn btn-md btn-secondary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      disabled={isLoading}
-                      onClick={unfollowDisplayedUser}
-                    >
-                      {isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Unfollow</div>
-                      )}
-                    </button>
-                  ) : (
-                    <button
-                      id="followButton"
-                      className="btn btn-md btn-primary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      disabled={isLoading}
-                      onClick={followDisplayedUser}
-                    >
-                      {isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Follow</div>
-                      )}
-                    </button>
-                  )}
+                  <LoadingButton
+                    id={isFollower ? "unFollowButton" : "followButton"}
+                    className={`btn btn-md ${isFollower ? "btn-secondary" : "btn-primary"} me-1`}
+                    type="submit"
+                    style={{ width: "6em" }}
+                    disabled={isLoading}
+                    isLoading={isLoading}
+                    onClick={toggleFollow}
+                  >
+                    {isFollower ? "Unfollow" : "Follow"}
+                  </LoadingButton>
                 </div>
               )}
             </form>
