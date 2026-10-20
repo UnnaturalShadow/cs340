@@ -1,3 +1,4 @@
+// Shared error callback.
 export interface MessageView {
   displayError(message: string): void;
 }
@@ -12,12 +13,13 @@ interface FailureOptions {
   onFailure?: () => void;
 }
 
-/** Owns the view once. V preserves each presenter's specific view contract. */
+// Shared view storage.
 export abstract class Presenter<V> {
   constructor(protected readonly view: V) {}
 }
 
 export abstract class ErrorReportingPresenter<V extends MessageView> extends Presenter<V> {
+  // Shared try/catch and error message.
   protected async doFailureReportingOperation(
     operation: () => Promise<void>,
     description: string,
@@ -32,7 +34,7 @@ export abstract class ErrorReportingPresenter<V extends MessageView> extends Pre
   }
 }
 
-/** Shared lifecycle: guard, prepare, run with error reporting, and always clean up. */
+// Shared busy/loading handling.
 export abstract class BusyPresenter<V extends MessageView & { setIsLoading(value: boolean): void }>
   extends ErrorReportingPresenter<V> {
   protected busy = false;
@@ -51,6 +53,7 @@ export abstract class BusyPresenter<V extends MessageView & { setIsLoading(value
 }
 
 export abstract class RequestPresenter<V extends RequestView> extends BusyPresenter<V> {
+  // Shared progress toast cleanup.
   protected async doRequest(operation: () => Promise<void>, description: string, message: string): Promise<void> {
     await this.doBusyOperation(async () => {
       const id = this.view.displayInfo(message, 0);

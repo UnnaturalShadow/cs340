@@ -5,7 +5,7 @@ import useMessageActions from "./useMessageActions";
 import useUserInfoActions from "./useUserInfoActions";
 import { ToastType } from "../components/toaster/Toast";
 
-/** React adapters belong in the view layer, while authentication stays in presenters. */
+// Shared login/register view callbacks.
 export default function useAuthenticationView() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();

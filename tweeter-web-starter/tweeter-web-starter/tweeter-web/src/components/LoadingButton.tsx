@@ -4,6 +4,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading: boolean;
 }
 
+// Shared button spinner and label.
 const LoadingButton = ({ isLoading, children, ...buttonProps }: Props) => (
   <button {...buttonProps}>
     {isLoading ? (

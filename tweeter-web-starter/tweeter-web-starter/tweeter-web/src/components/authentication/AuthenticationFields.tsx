@@ -7,6 +7,7 @@ interface Props {
   passwordIsLast?: boolean;
 }
 
+// Shared login/register fields.
 const AuthenticationFields = ({ setAlias, setPassword, onKeyDown, passwordIsLast = false }: Props) => (
   <>
     <div className="form-floating">

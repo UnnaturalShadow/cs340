@@ -10,10 +10,12 @@ export interface AuthenticationView extends MessageView {
 export abstract class AuthenticationPresenter<V extends AuthenticationView> extends BusyPresenter<V> {
   constructor(view: V, public service = new UserService()) { super(view); }
 
+  // Shared login/register validation.
   protected credentialsMissing(alias: string, password: string): boolean {
     return this.busy || !alias.trim() || !password;
   }
 
+  // Shared login/register workflow.
   protected async authenticate(
     operation: () => Promise<[User, AuthToken]>, remember: boolean, description: string, originalUrl?: string,
   ): Promise<void> {

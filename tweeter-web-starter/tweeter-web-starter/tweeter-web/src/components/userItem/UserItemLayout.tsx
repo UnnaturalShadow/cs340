@@ -9,7 +9,7 @@ interface Props {
   children?: ReactNode;
 }
 
-/** Shared author presentation; status rows supply their date and post as children. */
+// Shared user/status row layout.
 const UserItemLayout = ({ user, featurePath, children }: Props) => {
   const { navigateToUser } = useUserNavigation();
   return (

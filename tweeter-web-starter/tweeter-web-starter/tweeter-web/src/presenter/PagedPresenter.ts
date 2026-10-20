@@ -5,6 +5,7 @@ export interface PagedPresenterView<T> extends MessageView {
   setItems(items: T[]): void;
   setHasMoreItems(value: boolean): void;
 }
+// Shared paging state for all four lists.
 export abstract class PagedPresenter<T, U> extends ErrorReportingPresenter<PagedPresenterView<T>> {
   private items: T[] = [];
   private last: T | null = null;
@@ -32,7 +33,7 @@ export abstract class PagedPresenter<T, U> extends ErrorReportingPresenter<Paged
     if (token && user) void this.loadMoreItems(token, user);
   }
   cancel() { this.generation++; }
-  /** Template method: subclasses supply data access and the item description. */
+  // Template method: shared paging steps.
   async loadMoreItems(token: AuthToken, user: User) {
     if (this.loading || !this.more) return;
     const generation = this.generation;

@@ -3,5 +3,6 @@ import { StatusService } from "../model/service/StatusService";
 import { PagedPresenter } from "./PagedPresenter";
 
 export abstract class PagedStatusItemPresenter extends PagedPresenter<Status, StatusService> {
+  // Shared feed/story service creation.
   protected createService(): StatusService { return new StatusService(); }
 }

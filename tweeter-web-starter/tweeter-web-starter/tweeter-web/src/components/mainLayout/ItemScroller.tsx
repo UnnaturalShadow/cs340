@@ -11,7 +11,7 @@ interface Props<T> {
   itemKey(item: T, index: number): Key;
 }
 
-/** One view lifecycle for either users or statuses; feature wrappers supply the differences. */
+// Shared scrolling UI for users and statuses.
 const ItemScroller = <T,>({ presenterFactory, itemComponentGenerator, itemKey }: Props<T>) => {
   const { displayedUser, authToken } = useUserInfo();
   const { displayToast } = useMessageActions();
