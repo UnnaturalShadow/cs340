@@ -9,7 +9,7 @@ interface Props {
   children?: ReactNode;
 }
 
-// Shared user/status row layout.
+// Composition: user/status rows reuse author markup; children supplies status content.
 const UserItemLayout = ({ user, featurePath, children }: Props) => {
   const { navigateToUser } = useUserNavigation();
   return (

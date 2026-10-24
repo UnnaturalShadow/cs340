@@ -23,7 +23,7 @@ export class UserInfoPresenter extends RequestPresenter<UserInfoView> {
       shouldReport: () => generation === this.generation,
     });
   }
-  // Shared follow/unfollow workflow.
+  // Parameterization: follow selects follow()/unfollow(); doRequest() shares cleanup.
   async changeFollow(token: AuthToken, selected: User, follow: boolean) {
     const generation = this.generation;
     await this.doRequest(async () => {

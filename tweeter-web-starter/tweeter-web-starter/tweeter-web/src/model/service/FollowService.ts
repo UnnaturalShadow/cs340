@@ -5,7 +5,7 @@ export class FollowService {
     return FakeData.instance.getPageOfUsers(last, size, user.alias);
   }
   async getFollowees(token: AuthToken, user: User, last: User | null, size: number): Promise<[User[], boolean]> {
-    // Reuse dummy user paging.
+    // Delegation: getFollowees() reuses getFollowers() while both use dummy data.
     return this.getFollowers(token, user, last, size);
   }
   async isFollower(token: AuthToken, current: User, selected: User): Promise<boolean> {
@@ -25,7 +25,7 @@ export class FollowService {
     // TODO: Call the server's unfollow endpoint before retrieving updated counts.
     return this.simulateFollowChange(token, user);
   }
-  // Shared follow/unfollow delay and counts.
+  // Extract method: follow()/unfollow() reuse simulateFollowChange() for delay and counts.
   private async simulateFollowChange(token: AuthToken, user: User): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so the follow message is visible. Remove when connected to the server.
     await new Promise(resolve => setTimeout(resolve, 2000));

@@ -11,7 +11,7 @@ interface Props<T> {
   itemKey(item: T, index: number): Key;
 }
 
-// Shared scrolling UI for users and statuses.
+// Generics + function props: T types items; presenterFactory/itemComponentGenerator vary behavior.
 const ItemScroller = <T,>({ presenterFactory, itemComponentGenerator, itemKey }: Props<T>) => {
   const { displayedUser, authToken } = useUserInfo();
   const { displayToast } = useMessageActions();

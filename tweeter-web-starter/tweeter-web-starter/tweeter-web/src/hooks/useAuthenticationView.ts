@@ -5,7 +5,7 @@ import useMessageActions from "./useMessageActions";
 import useUserInfoActions from "./useUserInfoActions";
 import { ToastType } from "../components/toaster/Toast";
 
-// Shared login/register view callbacks.
+// Custom hook: login/register reuse loading, authenticated(), and displayError() callbacks.
 export default function useAuthenticationView() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();

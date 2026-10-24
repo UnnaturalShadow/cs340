@@ -5,7 +5,7 @@ export interface PagedPresenterView<T> extends MessageView {
   setItems(items: T[]): void;
   setHasMoreItems(value: boolean): void;
 }
-// Shared paging state for all four lists.
+// Generics: T keeps items/cursor/view consistent; U selects the service type.
 export abstract class PagedPresenter<T, U> extends ErrorReportingPresenter<PagedPresenterView<T>> {
   private items: T[] = [];
   private last: T | null = null;
@@ -33,7 +33,7 @@ export abstract class PagedPresenter<T, U> extends ErrorReportingPresenter<Paged
     if (token && user) void this.loadMoreItems(token, user);
   }
   cancel() { this.generation++; }
-  // Template method: shared paging steps.
+  // Template Method: loadMoreItems() uses getMoreItems()/getItemDescription() overrides.
   async loadMoreItems(token: AuthToken, user: User) {
     if (this.loading || !this.more) return;
     const generation = this.generation;

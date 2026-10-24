@@ -5,7 +5,7 @@ export class StatusService {
     return FakeData.instance.getPageOfStatuses(last, size);
   }
   async getStory(token: AuthToken, user: User, last: Status | null, size: number): Promise<[Status[], boolean]> {
-    // Reuse dummy status paging.
+    // Delegation: getStory() reuses getFeed() while both use dummy data.
     return this.getFeed(token, user, last, size);
   }
   async postStatus(token: AuthToken, status: Status): Promise<void> {
