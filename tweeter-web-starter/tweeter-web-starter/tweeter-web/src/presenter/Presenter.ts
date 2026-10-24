@@ -53,12 +53,13 @@ export abstract class BusyPresenter<V extends MessageView & { setIsLoading(value
 }
 
 export abstract class RequestPresenter<V extends RequestView> extends BusyPresenter<V> {
-  // Function parameter: wrap operation() with a progress toast and finally cleanup.
-  protected async doRequest(operation: () => Promise<void>, description: string, message: string): Promise<void> {
+  // Function parameter: wrap operation() with a progress toast and configurable failure cleanup.
+  protected async doRequest(operation: () => Promise<void>, description: string, message: string, clearOnFailure = true): Promise<void> {
     await this.doBusyOperation(async () => {
       const id = this.view.displayInfo(message, 0);
-      try { await operation(); }
-      finally { this.view.deleteMessage(id); }
+      let succeeded = false;
+      try { await operation(); succeeded = true; }
+      finally { if (succeeded || clearOnFailure) this.view.deleteMessage(id); }
     }, description);
   }
 }

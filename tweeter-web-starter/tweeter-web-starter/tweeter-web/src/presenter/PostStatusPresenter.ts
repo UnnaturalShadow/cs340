@@ -4,7 +4,8 @@ import { RequestPresenter, RequestView } from "./Presenter";
 
 export interface PostStatusView extends RequestView { setPost(post: string): void; }
 export class PostStatusPresenter extends RequestPresenter<PostStatusView> {
-  constructor(view: PostStatusView, public service = new StatusService()) { super(view); }
+  constructor(view: PostStatusView, private _service = new StatusService()) { super(view); }
+  public get service(): StatusService { return this._service; }
   isDisabled(post: string, token: AuthToken | null, user: User | null) { return this.busy || !post.trim() || !token || !user; }
   async submit(post: string, token: AuthToken | null, user: User | null) {
     if (this.isDisabled(post, token, user)) return;

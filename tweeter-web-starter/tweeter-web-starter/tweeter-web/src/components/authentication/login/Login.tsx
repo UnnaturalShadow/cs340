@@ -1,4 +1,4 @@
-import { LoginPresenter } from "../../../presenter/LoginPresenter";
+import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 import AuthenticationFields from "../AuthenticationFields";
 import useAuthenticationView from "../../../hooks/useAuthenticationView";
 import "./Login.css";
@@ -10,6 +10,7 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 
 interface Props {
   originalUrl?: string;
+  presenterFactory?: (view: LoginView) => LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -18,7 +19,7 @@ const Login = (props: Props) => {
   const [rememberMe, setRememberMe] = useState(false);
   const { isLoading, view } = useAuthenticationView();
 
-  const [presenter] = useState(() => new LoginPresenter(view));
+  const [presenter] = useState(() => props.presenterFactory?.(view) ?? new LoginPresenter(view));
   const checkSubmitButtonStatus = () => isLoading || presenter.isDisabled(alias, password);
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter") { event.preventDefault(); void doLogin(); }

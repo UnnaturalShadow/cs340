@@ -22,7 +22,8 @@ const AppNavbar = () => {
     displayInfo: (message, duration) => displayToast(ToastType.Info, message, duration),
     displayError: message => { displayToast(ToastType.Error, message, 0); },
     deleteMessage: deleteToast,
-    loggedOut: () => { clearUserInfo(); navigate("/login"); },
+    clearUserInfo,
+    navigateToLogin: () => navigate("/login"),
   }));
   const logOut = () => { if (authToken) void presenter.logout(authToken); };
 

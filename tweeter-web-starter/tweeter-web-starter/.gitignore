@@ -1,15 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # production
-/build
+build/
+dist/
+*.tsbuildinfo
 
 # misc
 .DS_Store
@@ -22,4 +24,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/dist
+# Downloaded AWS CLI installer and extracted distribution
+/aws/
+/awscliv2.zip
+
+# Local verification environments and dependency backups
+/tmp/
+
+# Generated submission archives (keep report PDFs visible to Git)
+/output/*.zip
+
+# Python report-generation caches
+__pycache__/
+*.py[cod]

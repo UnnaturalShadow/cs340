@@ -4,17 +4,21 @@ import useUserInfo from "../../hooks/useUserInfo";
 import "./PostStatus.css";
 import { useState } from "react";
 
-import { PostStatusPresenter } from "../../presenter/PostStatusPresenter";
+import { PostStatusPresenter, PostStatusView } from "../../presenter/PostStatusPresenter";
 import { ToastType } from "../toaster/Toast";
 
-const PostStatus = () => {
+interface Props {
+  presenterFactory?: (view: PostStatusView) => PostStatusPresenter;
+}
+
+const PostStatus = ({ presenterFactory = view => new PostStatusPresenter(view) }: Props) => {
   const { displayToast, deleteToast } = useMessageActions();
 
   const { currentUser, authToken } = useUserInfo();
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [presenter] = useState(() => new PostStatusPresenter({
+  const [presenter] = useState(() => presenterFactory({
     setIsLoading, setPost,
     displayInfo: (message, duration) => displayToast(ToastType.Info, message, duration),
     displayError: message => { displayToast(ToastType.Error, message, 0); },

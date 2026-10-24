@@ -108,9 +108,11 @@ async function main() {
   });
   assert.equal(posting.isDisabled('  ', token, user), true);
   await posting.submit(post, token, user); assert.equal(post, ''); assert.equal(posted.user, user);
-  let loggedOut = false;
-  await new AppNavbarPresenter({ ...view, loggedOut: () => loggedOut = true }, { logout: async () => {} }).logout(token);
-  assert.equal(loggedOut, true);
+  let userInfoCleared = false, navigatedToLogin = false;
+  await new AppNavbarPresenter({ ...view, clearUserInfo: () => userInfoCleared = true,
+    navigateToLogin: () => navigatedToLogin = true }, { logout: async () => {} }).logout(token);
+  assert.equal(userInfoCleared, true);
+  assert.equal(navigatedToLogin, true);
   let selected, path;
   const navigation = new UserNavigationPresenter({ ...view, setDisplayedUser: value => selected = value, navigate: value => path = value }, service);
   await navigation.select(token, '@amy', '/story/@amy');
@@ -160,9 +162,10 @@ async function main() {
     assert.deepEqual(events.at(-1), ['loading', false]);
   } finally { global.FileReader = originalReader; }
 
-  // Every consumer of the request template must clean up its progress toast on failure.
+  // Failed logout retains its progress toast per the milestone; other requests clean up.
   for (const run of [
-    () => new AppNavbarPresenter({ ...view, loggedOut: () => assert.fail('logout succeeded') }, {
+    () => new AppNavbarPresenter({ ...view, clearUserInfo: () => assert.fail('user info cleared'),
+      navigateToLogin: () => assert.fail('navigated to login') }, {
       logout: async () => { throw Error('offline'); },
     }).logout(token),
     () => new PostStatusPresenter({ ...view, setPost: () => assert.fail('post cleared') }, {
@@ -175,7 +178,7 @@ async function main() {
     events.length = 0;
     await run();
     assert.match(events.find(e => e[0] === 'error')[1], /offline/);
-    assert.deepEqual(events.filter(e => e[0] === 'delete'), [['delete', 'toast']]);
+    assert.deepEqual(events.filter(e => e[0] === 'delete'), /log out/.test(events.find(e => e[0] === 'error')[1]) ? [] : [['delete', 'toast']]);
     assert.deepEqual(events.filter(e => e[0] === 'loading'), [['loading', true], ['loading', false]]);
   }
 
