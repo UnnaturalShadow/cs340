@@ -4,45 +4,41 @@
 
 ### 1. Roles, relationships, and the dependency rule
 
-The view consists of the Story React component and its ItemScroller<Status> child. Story supplies the StoryPresenter factory and renders each status through StatusItem. ItemScroller owns React state for items and hasMoreItems; it supplies a PagedPresenterView<Status> object whose setItems, setHasMoreItems, and displayError callbacks update state or display an error toast.
+In my design, Story and ItemScroller<Status> make up the view. Story creates the StoryPresenter and uses StatusItem to display each status. ItemScroller keeps the items and hasMoreItems in React state. It gives the presenter a PagedPresenterView<Status> object with methods for updating the list, setting whether more items are available, and showing an error.
 
-StoryPresenter is the concrete presenter. It inherits the paging algorithm from PagedPresenter<Status, StatusService> through PagedStatusItemPresenter. Its getMoreItems override calls StatusService.getStory(token, user, lastItem, pageSize), and its getItemDescription override supplies "story" for error messages. The inherited pageSize is 10.
+StoryPresenter is the presenter for the story. It extends PagedStatusItemPresenter, which extends PagedPresenter<Status, StatusService>. The parent class handles loading pages of items. StoryPresenter's getMoreItems method calls StatusService.getStory with the auth token, user, last item, and page size. Its getItemDescription method returns "story" for error messages. Each page has up to 10 statuses.
 
-The model includes StatusService and the shared Status, User, AuthToken, and FakeData types. StatusService.getStory currently delegates to getFeed, which returns a page of hardcoded statuses from FakeData. There is no network request or persistent story update at this milestone.
+The model includes StatusService and the shared Status, User, AuthToken, and FakeData types. StatusService gets the story data. For this milestone, getStory calls getFeed, which returns hardcoded statuses from FakeData. The app does not save new statuses or make a real backend request yet.
 
-The view depends on presenter types and constructs StoryPresenter through a factory. The presenter depends on the PagedPresenterView interface, not on React, ItemScroller, StatusItem, or the toast implementation. PagedPresenterView extends MessageView for displayError. The view supplies the implementation of that interface, so callbacks cross back into the UI without a presenter importing the UI layer. The model imports no view or presenter. Shared domain types can be used across layers. These source dependencies preserve the UI-to-presenter-to-model direction; the diagram's callback arrows represent runtime calls, not reverse imports.
+The view uses the presenter, and the presenter uses the model. To update the screen, the presenter calls methods on the PagedPresenterView interface. It does not import the React components or know how they display the data. The view provides the methods that implement this interface. The model also does not import the view or presenter. This follows the dependency rule because the lower layers do not depend on the UI code. Calling a view method through an interface does not require the presenter to depend on a specific React component.
 
-When authToken or displayedUser changes, ItemScroller's effect calls reset. Reset clears the items and cursor, increments a generation counter, and starts loading if both arguments exist. loadMoreItems checks the loading and has-more guards, awaits the subclass hook, appends the returned page, updates the cursor, and calls the view callbacks. InfiniteScroll renders the updated items and requests another page through loadMoreItems. Effect cleanup calls cancel, which invalidates pending results.
+When the auth token or displayed user changes, ItemScroller calls reset. This clears the old list and starts loading for the selected user. loadMoreItems waits for the service, adds the new statuses, remembers the last item, and updates the view. Scrolling requests another page. When the view changes or closes, cancel prevents an old request from updating the wrong list.
 
 ### 2. Why MVP is effective here
 
-1. Separation of responsibilities: ItemScroller renders state, StoryPresenter chooses the story operation, and StatusService supplies dummy model data. Replacing dummy data with a backend can happen in the service without moving paging logic into React.
-2. Testability: presenters can receive a fake view and service without mounting React. View tests can substitute a presenter. The milestone's navbar and posting tests use these same boundaries.
-3. Reuse and consistent behavior: StoryPresenter and FeedPresenter share paging, error handling, cancellation, and concurrency guards while selecting different service methods. The same ItemScroller renders either list.
+1. It separates the jobs of the different parts. The view displays the statuses, the presenter handles loading them, and the service provides the data. This should make it easier to replace the dummy data with a backend later.
+2. It makes testing easier. I can mock a presenter's view and service to test its behavior without rendering a React component. This is how the navbar and posting presenter tests work.
+3. It lets me reuse code. StoryPresenter and FeedPresenter share the page-loading steps but call different service methods. Both views can also use ItemScroller to display their lists.
 
-The PDF contains the corresponding class and sequence diagrams. The sequence shows a successful first page; errors call displayError and setHasMoreItems(false), and canceled/stale requests skip state updates.
+The PDF contains the class and sequence diagrams for this design. The sequence diagram shows the first page loading successfully. Its solid arrows show ordinary method calls, even when a method returns a Promise. The dashed arrow from the service to the presenter summarizes the awaited result rather than a literal immediate return. The presenter's continuation pauses at await without blocking the browser. reset starts loadMoreItems without waiting for its Promise. Error handling and canceled requests are not shown.
 
 ## Question 2. Template Method in paged presenters
 
 ### A. Roles and collaboration
 
-PagedPresenter<T, U> is the abstract class. Its loadMoreItems method is the template method: it fixes the ordering of the guard checks, request tracking, call to getMoreItems, stale-result check, page accumulation, cursor update, view updates, and loading cleanup. It uses inherited doFailureReportingOperation for the shared try/catch, with an onFailure callback that stops further paging. reset and cancel manage the generation counter and list lifecycle.
+I used Template Method in the paged presenters. PagedPresenter<T, U> is the abstract superclass, and loadMoreItems is the template method. It defines the common steps: check whether another page can be loaded, call getMoreItems, add the results to the list, remember the last item, and update the view. It also makes sure an old request does not update a different user's list. Error handling comes from doFailureReportingOperation in ErrorReportingPresenter.
 
-getMoreItems(token, user) and getItemDescription() are abstract hooks. createService() is another abstract hook used by the lazy service getter. PagedStatusItemPresenter provides the StatusService factory; StoryPresenter and FeedPresenter provide the concrete service calls and descriptions. StoryPresenter calls getStory, FeedPresenter calls getFeed, and both use the inherited lastItem and pageSize. PagedUserItemPresenter similarly supplies FollowService for the follower and followee presenters.
+The subclasses provide the parts that change. StoryPresenter implements getMoreItems by calling getStory, while FeedPresenter calls getFeed. They also implement getItemDescription so errors refer to the right list. These methods are the hooks used by the template method. PagedStatusItemPresenter is their shared parent and implements createService to provide a StatusService. Both concrete presenters use the lastItem and pageSize from PagedPresenter.
 
 ### B. How duplication is reduced
 
-Without this shared algorithm, separate story and feed loaders would each need items, last, more, loading, generation, page size, guards, error handling, appending, and view updates. PagedPresenter stores and implements these once. The concrete presenters retain only their different service call and descriptive label. A correction to stale-result handling or cursor advancement therefore applies to both lists, as well as follower/followee pagination.
+Before Part B, ScrollerPresenter<T> already shared the paging state, the loadMore method, and paging error handling between story and feed. StoryPresenter and FeedPresenter each had a similar constructor. Each constructor created a StatusService and passed the parent a label and a service method to call. Figure 3 shows this earlier design.
 
-The PDF's "before" diagram is a conceptual reconstruction of duplicated loaders before extracting the shared algorithm, not a claim that those exact standalone classes appear in git history. The repository already used a callback-based shared ScrollerPresenter before the current hook-based hierarchy (for example, commit cc6e151). That earlier implementation already removed paging duplication; the current template-method design preserves that reuse and expresses the variation through protected overrides rather than bound callback constructor arguments. The "after" diagram reflects the current source, with only members relevant to the explanation shown.
+After the refactor, PagedPresenter.loadMoreItems contains the shared steps and calls the methods that the subclasses override. PagedStatusItemPresenter creates the StatusService in one place instead of repeating that setup in both constructors. ErrorReportingPresenter extends error-reporting reuse across different presenter types, rather than just the paged lists. Figure 4 shows how StoryPresenter and FeedPresenter inherit the common behavior and supply their own service calls.
 
-## Source map
-
-- View: tweeter-web/src/components/mainLayout/Story.tsx, ItemScroller.tsx; components/statusItem/StatusItem.tsx.
-- Presenter: tweeter-web/src/presenter/StoryPresenter.ts, FeedPresenter.ts, PagedStatusItemPresenter.ts, PagedPresenter.ts, Presenter.ts.
-- Model: tweeter-web/src/model/service/StatusService.ts; tweeter-shared/src/model/domain and util/FakeData.ts.
+The paging loop and its error handling were already shared before this change. The refactor keeps that reuse, shares service creation, and makes the common error-reporting method available to other presenter types. Template Method makes it clearer which steps stay the same and which parts each subclass must provide. For example, I can change how pages are added to the list in PagedPresenter without changing both StoryPresenter and FeedPresenter.
 
 ## Assignment references
 
 - Testing setup: https://github.com/BYU-CS-340/softwaredesign/blob/main/tweeter/milestone-2c/tweeter-project-testing-setup-tutorial.md
-- Report requirements: user-supplied Milestone 2 Part C: Documents.
+- Report requirements: Milestone 2 Part C: Documents.
