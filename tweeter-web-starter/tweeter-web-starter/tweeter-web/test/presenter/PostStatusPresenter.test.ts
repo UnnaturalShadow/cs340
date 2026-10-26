@@ -12,11 +12,13 @@ describe('PostStatusPresenter', () => {
   let presenter: PostStatusPresenter;
   let presenterSpy: PostStatusPresenter;
 
+  // Fresh mocks; thenResolve() gives the service a successful Promise by default.
   beforeEach(() => {
     view = mock<PostStatusView>();
     service = mock(StatusService);
     when(service.postStatus(anything(), anything())).thenResolve();
     when(view.displayInfo('Posting status...', 0)).thenReturn('posting-message');
+    // Run real presenter code with a mocked service, no actual posting.
     presenterSpy = spy(new PostStatusPresenter(instance(view)));
     presenter = instance(presenterSpy);
     when(presenterSpy.service).thenReturn(instance(service));
@@ -31,16 +33,19 @@ describe('PostStatusPresenter', () => {
     const start = Date.now();
     await presenter.postStatus(post, token, user);
     verify(service.postStatus(token, anything())).once();
+    // Capture the constructed Status; check its fields instead of object identity.
     const [actualToken, status] = capture(service.postStatus).last();
     expect(actualToken).toBe(token);
     expect(status.post).toBe(post);
     expect(status.user).toBe(user);
+    // Timestamp should fall within this call, no hard-coded clock value.
     expect(status.timestamp).toBeGreaterThanOrEqual(start);
     expect(status.timestamp).toBeLessThanOrEqual(Date.now());
   });
 
   it('on success deletes the progress message, clears the draft, and displays confirmation', async () => {
     await presenter.postStatus(post, token, user);
+    // Same toast ID returned during setup; once() checks exactly one call.
     verify(view.deleteMessage('posting-message')).once();
     verify(view.setPost('')).once();
     verify(view.displayInfo('Status posted!', 2000)).once();
@@ -48,6 +53,7 @@ describe('PostStatusPresenter', () => {
     verify(view.setIsLoading(false)).once();
   });
 
+  // thenReject() exercises the catch path; keep the draft, remove the progress toast.
   it('on failure deletes the progress message and reports the reason while preserving the draft', async () => {
     when(service.postStatus(anything(), anything())).thenReject(new Error('posting unavailable'));
     await presenter.postStatus(post, token, user);

@@ -6,6 +6,7 @@ import PostStatus from '../../src/components/postStatus/PostStatus';
 import useUserInfo from '../../src/hooks/useUserInfo';
 import { PostStatusPresenter, PostStatusView } from '../../src/presenter/PostStatusPresenter';
 
+// Jest replaces the default-exported hook; no logged-in context needed.
 jest.mock('../../src/hooks/useUserInfo', () => ({ __esModule: true, default: jest.fn() }));
 
 describe('PostStatus', () => {
@@ -13,6 +14,7 @@ describe('PostStatus', () => {
   const currentUser = new User('Test', 'User', '@test', 'image.png');
   const post = 'My status';
 
+  // Valid user/token so button checks depend on draft text.
   beforeEach(() => {
     (useUserInfo as jest.Mock).mockReturnValue({ currentUser, authToken: token });
   });
@@ -20,7 +22,9 @@ describe('PostStatus', () => {
   function setup() {
     const presenter = new PostStatusPresenter(instance(mock<PostStatusView>()));
     const presenterSpy = spy(presenter);
+    // Stub submission only; keep real isDisabled validation.
     when(presenterSpy.postStatus(post, token, currentUser)).thenResolve();
+    // Factory supplies our spy so we can verify the component delegates to it.
     render(<PostStatus presenterFactory={() => instance(presenterSpy)} />);
     return {
       user: userEvent.setup(), presenterSpy,
@@ -38,6 +42,7 @@ describe('PostStatus', () => {
 
   it('enables both buttons when text is entered', async () => {
     const { user, text, postButton, clearButton } = setup();
+    // Await user-event before checking the rendered button state.
     await user.type(text, post);
     expect(postButton).toBeEnabled();
     expect(clearButton).toBeEnabled();

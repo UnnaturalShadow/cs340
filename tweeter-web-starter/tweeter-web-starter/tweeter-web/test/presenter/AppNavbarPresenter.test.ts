@@ -10,17 +10,21 @@ describe('AppNavbarPresenter', () => {
   let presenter: AppNavbarPresenter;
   let presenterSpy: AppNavbarPresenter;
 
+  // Fresh view/service mocks each test; instance() is what the presenter uses.
   beforeEach(() => {
     view = mock<NavbarView>();
     service = mock(UserService);
     when(service.logout(anything())).thenResolve();
+    // Known toast ID lets us check that the same message gets deleted.
     when(view.displayInfo('Logging out...', 0)).thenReturn('logout-message');
+    // Real presenter logic; replace only its service getter.
     presenterSpy = spy(new AppNavbarPresenter(instance(view)));
     presenter = instance(presenterSpy);
     when(presenterSpy.service).thenReturn(instance(service));
   });
 
   it('tells the view to display a logging out message', async () => {
+    // Act, then verify interactions; await finishes the async logout first.
     await presenter.logout(token);
     verify(view.displayInfo('Logging out...', 0)).once();
   });
@@ -38,6 +42,7 @@ describe('AppNavbarPresenter', () => {
     verify(view.displayError(anything())).never();
   });
 
+  // Rejected Promise = service failure; never() checks success actions stay skipped.
   it('on failure reports the reason and retains the progress message and session', async () => {
     when(service.logout(anything())).thenReject(new Error('logout unavailable'));
     await presenter.logout(token);

@@ -12,8 +12,10 @@ describe('Login', () => {
     // Leave isDisabled real so the button tests exercise actual validation.
     when(presenterSpy.login('@test', 'secret', true, originalUrl)).thenResolve();
     when(presenterSpy.login('@test', 'secret', false, originalUrl)).thenResolve();
+    // Router supplies context; factory injects our spy instead of a new presenter.
     render(<MemoryRouter><Login originalUrl={originalUrl} presenterFactory={() => instance(presenterSpy)} /></MemoryRouter>);
     return {
+      // Find controls by labels/roles, interact like a user.
       user: userEvent.setup(), presenterSpy,
       alias: screen.getByLabelText('Alias'),
       password: screen.getByLabelText('Password'),
@@ -33,6 +35,7 @@ describe('Login', () => {
     expect(button).toBeEnabled();
   });
 
+  // Same test twice: clearing either credential must disable sign-in.
   it.each(['alias', 'password'] as const)('disables Sign in when the %s is cleared', async field => {
     const controls = setup();
     await controls.user.type(controls.alias, '@test');
@@ -42,6 +45,7 @@ describe('Login', () => {
     expect(controls.button).toBeDisabled();
   });
 
+  // Check both Remember me values and exact arguments passed to the presenter.
   it.each([false, true])('calls login with credentials, remember=%s, and the original URL', async remember => {
     const { user, alias, password, button, presenterSpy } = setup('/story/@test');
     await user.type(alias, '@test');
