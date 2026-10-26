@@ -25,7 +25,7 @@ const PostStatus = ({ presenterFactory = view => new PostStatusPresenter(view) }
     deleteMessage: deleteToast,
   }));
   const submitPost = (event: React.MouseEvent) => {
-    event.preventDefault(); void presenter.submit(post, authToken, currentUser);
+    event.preventDefault(); void presenter.postStatus(post, authToken, currentUser);
   };
   const clearPost = (event: React.MouseEvent) => { event.preventDefault(); setPost(""); };
   const checkButtonStatus = () => isLoading || presenter.isDisabled(post, authToken, currentUser);

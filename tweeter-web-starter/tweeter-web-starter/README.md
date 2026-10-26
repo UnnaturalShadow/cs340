@@ -4,26 +4,27 @@ A starter project for the Tweeter Web application.
 
 ## Setting Up the Project
 
-1. cd into the project root folder
-1. Run 'npm install'
-1. cd into the tweeter-shared folder
-1. Run 'npm install'
-1. Run 'npm run build'
-1. cd into the tweeter-web folder
-1. Run 'npm install'
-1. Run 'npm run build'
+Install Node.js and npm, then run these commands from the project root (the folder containing this README):
 
-**Note:** VS Code seems to have a bug. After doing this, you should be able to run the project but code editors report that they can't see the 'tweeter-shared' module. Restarting VS Code fixes the problem. You will likely need to restart VS Code every time you compile or build the 'tweeter-shared' module.
+```sh
+npm ci
+npm run build
+npm start
+```
 
-**Note:** If you are using Windows, make sure to use a Git Bash terminal instead of Windows Powershell. Otherwise, the scripts won't run properly in tweeter-shared and it will cause errors when building tweeter-web.
-
-## Rebuilding the Project
-
-Rebuild either module of the project (tweeter-shared or tweeter-web) by running 'npm run build' after making any code or configuration changes in the module. The 'tweeter-web' module is dependent on 'tweeter-shared', so if you change 'tweeter-shared' you will also need to rebuild 'tweeter-web'. After rebuilding 'tweeter-shared' you will likely need to restart VS Code (see note above under 'Setting Up the Project').
+The project uses npm workspaces, so one install sets up both `tweeter-shared` and `tweeter-web`. Run `npm ci` on each machine instead of copying `node_modules` between Windows/WSL and macOS; dependencies include platform-specific binaries.
 
 ## Running the Project
 
-Run the project by running 'npm start' from within the 'tweeter-web' folder.
+Run `npm start` from the project root. It builds the shared module and starts the Vite development server, normally at http://localhost:5173. Vite prints the actual URL and opens your browser. Stop it with Ctrl+C.
+
+The existing `npm start` command inside `tweeter-web` also works after the shared module has been built.
+
+## Rebuilding and Testing
+
+Run `npm run build` from the project root to build both workspaces in dependency order. Run `npm test` to build the shared module and run the Jest suite and presenter checks.
+
+The web development server updates when web source files change. After changing `tweeter-shared`, run `npm run build --workspace tweeter-shared` or restart the root `npm start` command. If VS Code cannot resolve `tweeter-shared` after building, restart its TypeScript server or reload the window.
 
 ## Milestone 1 structure
 
@@ -36,7 +37,7 @@ Run the project by running 'npm start' from within the 'tweeter-web' folder.
 
 The starter's fake data and placeholder server/OAuth behavior remain in place for this milestone.
 
-From the project root in WSL, install and build with:
+From the project root on macOS, Linux/WSL, or Windows, the workspace commands also work directly:
 
 ```sh
 npm ci

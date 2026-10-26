@@ -13,6 +13,7 @@ describe('AppNavbarPresenter', () => {
   beforeEach(() => {
     view = mock<NavbarView>();
     service = mock(UserService);
+    when(service.logout(anything())).thenResolve();
     when(view.displayInfo('Logging out...', 0)).thenReturn('logout-message');
     presenterSpy = spy(new AppNavbarPresenter(instance(view)));
     presenter = instance(presenterSpy);
@@ -38,7 +39,7 @@ describe('AppNavbarPresenter', () => {
   });
 
   it('on failure reports the reason and retains the progress message and session', async () => {
-    when(service.logout(anything())).thenThrow(new Error('logout unavailable'));
+    when(service.logout(anything())).thenReject(new Error('logout unavailable'));
     await presenter.logout(token);
     verify(view.displayError('Failed to log out: Error: logout unavailable')).once();
     verify(view.deleteMessage(anything())).never();

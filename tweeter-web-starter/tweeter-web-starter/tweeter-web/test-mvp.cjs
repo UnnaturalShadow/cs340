@@ -107,7 +107,7 @@ async function main() {
     postStatus: async (auth, status) => { posted = status; assert.equal(auth, token); }
   });
   assert.equal(posting.isDisabled('  ', token, user), true);
-  await posting.submit(post, token, user); assert.equal(post, ''); assert.equal(posted.user, user);
+  await posting.postStatus(post, token, user); assert.equal(post, ''); assert.equal(posted.user, user);
   let userInfoCleared = false, navigatedToLogin = false;
   await new AppNavbarPresenter({ ...view, clearUserInfo: () => userInfoCleared = true,
     navigateToLogin: () => navigatedToLogin = true }, { logout: async () => {} }).logout(token);
@@ -170,7 +170,7 @@ async function main() {
     }).logout(token),
     () => new PostStatusPresenter({ ...view, setPost: () => assert.fail('post cleared') }, {
       postStatus: async () => { throw Error('offline'); },
-    }).submit('keep this draft', token, user),
+    }).postStatus('keep this draft', token, user),
     () => new UserInfoPresenter({ ...view, setIsFollower: () => assert.fail('follow changed') }, {
       follow: async () => { throw Error('offline'); },
     }).changeFollow(token, user, true),

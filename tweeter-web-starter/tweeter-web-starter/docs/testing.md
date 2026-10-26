@@ -19,9 +19,9 @@ Jest uses jsdom and ts-jest with a separate test TypeScript configuration. CSS i
 | Login | Initially disabled; enabled after both fields contain text; disabled when either is cleared; exact login arguments including remember-me and original URL |
 | PostStatus | Both buttons initially disabled; enabled by text; disabled after erasure; Clear behavior; exact submission arguments |
 
-The local posting presenter calls its operation `submit`, not `postStatus`; the tests use `submit` and verify the resulting `StatusService.postStatus` call. The service accepts an AuthToken and Status object rather than a raw string. The tests inspect the Status's text, author, and timestamp.
+The posting presenter exposes `postStatus`, matching the assignment; the tests invoke it and verify the resulting `StatusService.postStatus` call. The service accepts an AuthToken and Status object rather than a raw string. The tests inspect the Status's text, author, and timestamp.
 
-Following the presenter video, each presenter suite has four focused tests, creates fresh view/service mocks in `beforeEach`, creates a spy on the real presenter, and stubs its `service` getter with `when(...).thenReturn(instance(mockService))`. Tests invoke `instance(presenterSpy)`, verify calls on mocks, and use `thenThrow` for the demonstrated failure case. Toast creation returns a known ID, which the success test verifies is passed to deletion, including the video's final correction.
+Following the presenter video, each presenter suite has four focused tests, creates fresh view/service mocks in `beforeEach`, creates a spy on the real presenter, and stubs its `service` getter with `when(...).thenReturn(instance(mockService))`. Tests invoke `instance(presenterSpy)`, verify calls on mocks, and use `thenReject` to model an asynchronous service failure. Toast creation returns a known ID, which the success test verifies is passed to deletion, including the video's final correction.
 
 The navbar view exposes separate `clearUserInfo()` and `navigateToLogin()` callbacks so the presenter tests verify both calls directly, as in the video. Navbar integration tests additionally check the actual navigation to `/login` and session cleanup.
 
@@ -29,10 +29,10 @@ Component tests inject `instance(presenterSpy)` through an optional factory. ts-
 
 The required logout failure behavior differs from other requests: it retains the progress toast. RequestPresenter accepts a cleanup option, defaulting to cleanup on both success and failure; only logout opts out of failure cleanup. The existing standalone MVP check reflects this requirement.
 
-Verified in Ubuntu WSL: all 21 tests across five suites, the existing MVP regression checks, and the production build. Vite still emits CommonJS export and bundle-size warnings from the existing shared-library/build setup.
+Verified on this Mac: all 21 tests across five suites, the existing MVP regression checks, and the production build. Vite still emits CommonJS export and bundle-size warnings from the existing shared-library/build setup.
 
-For this working folder, dependencies are stored on WSL's native Linux filesystem and linked from the project's `node_modules`. This avoids unreliable reads and extraction on the Windows mount. The previous mounted dependency directories are preserved under ignored `tmp/` backups. Run development commands through WSL.
+Dependencies are now installed locally for macOS. Use `npm ci` when moving between machines; do not copy `node_modules`. From the project root, `npm test`, `npm run build`, and `npm start` handle the workspace commands. The WSL verification script remains available for older Windows/WSL workflows.
 
-If package extraction on the Windows mount produces corrupted dependencies, run `bash docs/verify-wsl.sh` from the project root. It makes a source-only copy in a new `/tmp/tweeter-milestone2.*` directory, installs locked dependencies there, compiles the shared library, and runs all checks. It records that directory in `tmp/wsl-verification-path.txt`.
+See [the passoff guide](passoff-guide.md) for a requirement map and explanations of the testing patterns.
 
 The editable report is `docs/milestone-2-report.md`. With ReportLab installed, run `python3 docs/build_report.py` to regenerate the PDF. With PyMuPDF installed, `python3 docs/verify_report.py` renders all four pages for visual review. `python3 docs/package_submission.py` creates the project ZIP and checks its integrity.

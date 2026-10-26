@@ -20,7 +20,7 @@ describe('PostStatus', () => {
   function setup() {
     const presenter = new PostStatusPresenter(instance(mock<PostStatusView>()));
     const presenterSpy = spy(presenter);
-    when(presenterSpy.submit(post, token, currentUser)).thenResolve();
+    when(presenterSpy.postStatus(post, token, currentUser)).thenResolve();
     render(<PostStatus presenterFactory={() => instance(presenterSpy)} />);
     return {
       user: userEvent.setup(), presenterSpy,
@@ -64,6 +64,6 @@ describe('PostStatus', () => {
     const { user, text, postButton, presenterSpy } = setup();
     await user.type(text, post);
     await user.click(postButton);
-    verify(presenterSpy.submit(post, token, currentUser)).once();
+    verify(presenterSpy.postStatus(post, token, currentUser)).once();
   });
 });
