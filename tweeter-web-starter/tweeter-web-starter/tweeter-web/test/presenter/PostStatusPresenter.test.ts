@@ -12,7 +12,7 @@ describe('PostStatusPresenter', () => {
   let presenter: PostStatusPresenter;
   let presenterSpy: PostStatusPresenter;
 
-  // Fresh mocks; thenResolve() gives the service a successful Promise by default.
+  // Fresh mocks, thenResolve() gives the service a successful Promise by default.
   beforeEach(() => {
     view = mock<PostStatusView>();
     service = mock(StatusService);
@@ -33,7 +33,7 @@ describe('PostStatusPresenter', () => {
     const start = Date.now();
     await presenter.postStatus(post, token, user);
     verify(service.postStatus(token, anything())).once();
-    // Capture the constructed Status; check its fields instead of object identity.
+    // Capture the constructed Status, check its fields instead of object identity.
     const [actualToken, status] = capture(service.postStatus).last();
     expect(actualToken).toBe(token);
     expect(status.post).toBe(post);
@@ -45,7 +45,7 @@ describe('PostStatusPresenter', () => {
 
   it('on success deletes the progress message, clears the draft, and displays confirmation', async () => {
     await presenter.postStatus(post, token, user);
-    // Same toast ID returned during setup; once() checks exactly one call.
+    // Same toast ID returned during setup, once() checks exactly one call.
     verify(view.deleteMessage('posting-message')).once();
     verify(view.setPost('')).once();
     verify(view.displayInfo('Status posted!', 2000)).once();

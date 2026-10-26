@@ -6,7 +6,7 @@ import PostStatus from '../../src/components/postStatus/PostStatus';
 import useUserInfo from '../../src/hooks/useUserInfo';
 import { PostStatusPresenter, PostStatusView } from '../../src/presenter/PostStatusPresenter';
 
-// Jest replaces the default-exported hook; no logged-in context needed.
+// Jest replaces the default-exported hook, no logged-in context needed.
 jest.mock('../../src/hooks/useUserInfo', () => ({ __esModule: true, default: jest.fn() }));
 
 describe('PostStatus', () => {
