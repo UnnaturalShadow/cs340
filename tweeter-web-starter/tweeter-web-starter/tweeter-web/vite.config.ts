@@ -6,7 +6,11 @@ import viteCommonJs from "vite-plugin-commonjs"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), viteTsconfigPaths(), svgrPlugin(), viteCommonJs()],
+  plugins: [react(), viteTsconfigPaths(), svgrPlugin(), { ...viteCommonJs(), apply: "serve" }],
+  build: {
+    // The shared workspace emits CommonJS; use Vite's production converter.
+    commonjsOptions: { include: [/node_modules/, /tweeter-shared[\\/]dist/] },
+  },
   server: {
     open: true,
   },

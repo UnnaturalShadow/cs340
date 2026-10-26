@@ -32,7 +32,7 @@ The subclasses provide the parts that change. StoryPresenter implements getMoreI
 
 ### B. How duplication is reduced
 
-Before Part B, ScrollerPresenter<T> already shared the paging state, the loadMore method, and paging error handling between story and feed. StoryPresenter and FeedPresenter each had a similar constructor. Each constructor created a StatusService and passed the parent a label and a service method to call. Figure 3 shows this earlier design.
+Before Part B, ScrollerPresenter<T> already shared the paging state, the loadMore method, and paging error handling between story and feed. StoryPresenter and FeedPresenter each had a similar constructor. Each constructor created a StatusService and passed the parent a label and a service method to call. Figure 3 shows this earlier design, verified against the Milestone 2A commit (98ad45e).
 
 After the refactor, PagedPresenter.loadMoreItems contains the shared steps and calls the methods that the subclasses override. PagedStatusItemPresenter creates the StatusService in one place instead of repeating that setup in both constructors. ErrorReportingPresenter extends error-reporting reuse across different presenter types, rather than just the paged lists. Figure 4 shows how StoryPresenter and FeedPresenter inherit the common behavior and supply their own service calls.
 
@@ -42,3 +42,5 @@ The paging loop and its error handling were already shared before this change. T
 
 - Testing setup: https://github.com/BYU-CS-340/softwaredesign/blob/main/tweeter/milestone-2c/tweeter-project-testing-setup-tutorial.md
 - Report requirements: Milestone 2 Part C: Documents.
+
+- Milestone 2 FAQ: https://github.com/BYU-CS-340/softwaredesign/blob/main/tweeter/milestone-2a/milestone-2-faq.md

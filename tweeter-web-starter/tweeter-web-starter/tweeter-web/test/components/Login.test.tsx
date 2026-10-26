@@ -13,7 +13,7 @@ describe('Login', () => {
     when(presenterSpy.login('@test', 'secret', true, originalUrl)).thenResolve();
     when(presenterSpy.login('@test', 'secret', false, originalUrl)).thenResolve();
     // Router supplies context; factory injects our spy instead of a new presenter.
-    render(<MemoryRouter><Login originalUrl={originalUrl} presenterFactory={() => instance(presenterSpy)} /></MemoryRouter>);
+    render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Login originalUrl={originalUrl} presenterFactory={() => instance(presenterSpy)} /></MemoryRouter>);
     return {
       // Find controls by labels/roles, interact like a user.
       user: userEvent.setup(), presenterSpy,

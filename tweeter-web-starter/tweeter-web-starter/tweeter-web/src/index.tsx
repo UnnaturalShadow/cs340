@@ -2,11 +2,11 @@ import "./index.css";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faFacebook, faTwitter, faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 import UserInfoProvider from "./components/userInfo/UserInfoProvider";
 import ToastInfoProvider from "./components/toaster/ToastInfoProvider";
 
-library.add(fab);
+library.add(faGoogle, faFacebook, faTwitter, faLinkedin, faGithub);
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);

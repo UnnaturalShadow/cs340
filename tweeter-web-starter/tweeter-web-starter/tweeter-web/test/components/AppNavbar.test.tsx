@@ -23,7 +23,7 @@ describe('AppNavbar logout view effects', () => {
       <UserInfoContext.Provider value={{ currentUser: user, displayedUser: user, authToken: token }}>
         <UserInfoActionsContext.Provider value={{ clearUserInfo, updateUserInfo: jest.fn(), setDisplayedUser: jest.fn() }}>
           <ToastActionsContext.Provider value={{ displayToast, deleteToast, displayExistingToast: jest.fn(), deleteAllToasts: jest.fn() }}>
-            <MemoryRouter initialEntries={['/feed/@test']}>
+            <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }} initialEntries={['/feed/@test']}>
               <Routes>
                 <Route path="/feed/:alias" element={<AppNavbar />} />
                 <Route path="/login" element={<h1>Login destination</h1>} />

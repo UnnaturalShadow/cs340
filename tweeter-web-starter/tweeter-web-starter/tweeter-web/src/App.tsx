@@ -31,7 +31,7 @@ const App = () => {
   return (
     <div>
       <Toaster position="top-right" />
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         {isAuthenticated() ? (
           <AuthenticatedRoutes />
         ) : (
