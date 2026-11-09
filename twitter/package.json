@@ -1,0 +1,21 @@
+{
+  "name": "tweeter",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm run build --workspace tweeter-shared && npm run build --workspace tweeter-web",
+    "prestart": "npm run build --workspace tweeter-shared",
+    "start": "npm start --workspace tweeter-web --",
+    "pretest": "npm run build --workspace tweeter-shared",
+    "test": "npm test --workspace tweeter-web -- --runInBand && npm run test:mvp --workspace tweeter-web"
+  },
+  "workspaces": [
+    "tweeter-shared",
+    "tweeter-web"
+  ],
+  "author": "JWilkerson",
+  "license": "ISC",
+  "dependencies": {
+    "rimraf": "^5.0.5",
+    "vite-plugin-dts": "^3.7.3"
+  }
+}
